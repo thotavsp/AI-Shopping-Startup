@@ -5,7 +5,9 @@ import { products } from "../data/products";
 
 export default function Home() {
   const [query, setQuery] = useState("");
-  const [showResults, setShowResults] = useState(false);
+    const [showResults, setShowResults] = useState(false);
+  const [liveProduct, setLiveProduct] = useState<string | null>(null);
+
 
   function handleAskAI() {
     if (!query.trim()) return;
@@ -119,15 +121,66 @@ export default function Home() {
                     Compare
                   </button>
 
-                  <button className="flex-1 rounded-lg bg-black px-3 py-2 text-sm text-white">
-                    Shop Live
-                  </button>
+                  <button
+  onClick={() => setLiveProduct(product.name)}
+  className="flex-1 rounded-lg bg-black px-3 py-2 text-sm text-white"
+>
+  Shop Live
+</button>
                 </div>
               </div>
             ))}
           </div>
         </section>
       )}
+    {liveProduct && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-6">
+    <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-2xl">
+      <div className="flex justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wider text-stone-500">
+            NightShop Live
+          </p>
+
+          <h2 className="mt-2 text-2xl font-bold">
+            Shop {liveProduct} live
+          </h2>
+        </div>
+
+        <button
+          onClick={() => setLiveProduct(null)}
+          className="text-xl"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p className="mt-4 text-stone-600">
+        Connect with a Hyderabad store associate who can show you the product,
+        answer questions, compare alternatives, and help with sizing.
+      </p>
+
+      <div className="mt-7 space-y-3">
+        <button className="w-full rounded-xl bg-black px-5 py-4 text-left text-white">
+          🎥 Start Live Video Shopping
+        </button>
+
+        <button className="w-full rounded-xl border px-5 py-4 text-left">
+          🤖 Ask AI About This Item
+        </button>
+
+        <button className="w-full rounded-xl border px-5 py-4 text-left">
+          📅 Schedule a Shopping Session
+        </button>
+      </div>
+
+      <div className="mt-6 rounded-xl bg-stone-100 p-4 text-sm">
+        <strong>Customer context shared with associate:</strong>
+        <p className="mt-1 text-stone-600">{query}</p>
+      </div>
+    </div>
+  </div>
+)}
     </main>
   );
 }
