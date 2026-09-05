@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ShoppingBrief, useCommerce } from "./CommerceContext";
 import { useEffect, useState } from "react";
 import ProductQuestions from "./ProductQuestions";
 import ShoppingSessions from "./ShoppingSessions";
@@ -8,6 +9,8 @@ import { recommend } from "../data/recommendations";
 import { products } from "../data/products";
 
 export default function Home() {
+  const { state: commerce, updateBrief } = useCommerce();
+
   const [questionProduct, setQuestionProduct] = useState<(typeof products)[number] | null>(null);
   const [scheduleProduct, setScheduleProduct] = useState<string | null>(null);
   const [submittedQuery, setSubmittedQuery] = useState("");
@@ -66,9 +69,12 @@ export default function Home() {
     });
   }
 
+  const shoppingContext = [submittedQuery, commerce.brief.intent, commerce.brief.budget && `Budget: $${commerce.brief.budget} USD`, commerce.brief.occasion, commerce.brief.eventDate && `Event: ${commerce.brief.eventDate}`, commerce.brief.size && `Size: ${commerce.brief.size}`, commerce.brief.destination].filter(Boolean).join(" · ");
+
   function handleAskAI() {
     if (!query.trim()) return;
     setSubmittedQuery(query.trim());
+    updateBrief({ ...commerce.brief, intent: query.trim() });
     setShowResults(true);
     setShowShortlist(false);
   }
@@ -82,9 +88,9 @@ export default function Home() {
           <button onClick={() => setShowShortlist((current) => !current)} aria-pressed={showShortlist}>
             Saved shortlist ({savedReady ? savedIds.length : "…"})
           </button>
-          <button>How it works</button>
+          <Link href="/explore">Explore Stores</Link>
           <Link href="/partner">IndiaAnytime Partner ↗</Link>
-          <button>Sign In</button>
+          <Link href="/explore#shopping-bag">Shopping bag ({commerce.cart.reduce((sum, line) => sum + line.quantity, 0)})</Link>
         </div>
       </nav>
 
@@ -138,6 +144,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <div className="px-6"><ShoppingBrief /></div>
+      <div className="mx-auto mb-10 max-w-6xl px-6"><Link href="/explore" className="inline-block rounded-xl bg-emerald-900 px-6 py-4 text-white">Explore Stores · Take a walk through India →</Link></div>
 
       {(showResults || showShortlist) && (
         <section className="mx-auto max-w-6xl px-6 pb-24">
@@ -312,8 +321,8 @@ export default function Home() {
           )}
         </section>
       )}
-    {questionProduct && <ProductQuestions key={questionProduct.id} product={questionProduct} matchReason={recommendations.reason(questionProduct)} request={submittedQuery} onClose={() => setQuestionProduct(null)} onSchedule={() => { setScheduleProduct(questionProduct.name); setQuestionProduct(null); }} />}
-    <ShoppingSessions product={scheduleProduct} request={submittedQuery} onClose={() => setScheduleProduct(null)} />
+    {questionProduct && <ProductQuestions key={questionProduct.id} product={questionProduct} matchReason={recommendations.reason(questionProduct)} request={shoppingContext} onClose={() => setQuestionProduct(null)} onSchedule={() => { setScheduleProduct(questionProduct.name); setQuestionProduct(null); }} />}
+    <ShoppingSessions product={scheduleProduct} request={shoppingContext} onClose={() => setScheduleProduct(null)} />
     {liveProduct && (
   <div className="fixed inset-0 flex items-center justify-center bg-black/50 p-6">
     <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-2xl">
@@ -357,7 +366,7 @@ export default function Home() {
 
       <div className="mt-6 rounded-xl bg-stone-100 p-4 text-sm">
         <strong>Customer context shared with associate:</strong>
-        <p className="mt-1 text-stone-600">{submittedQuery}</p>
+        <p className="mt-1 text-stone-600">{shoppingContext}</p>
       </div>
     </div>
   </div>

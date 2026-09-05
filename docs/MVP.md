@@ -30,7 +30,7 @@ Use realistic mock data only. Retailers, artisans, customer identities, ratings/
 - Promotions: percentage/fixed discounts, festival campaigns, live-shopping offers, bundles, cross-sell and upsell; eligibility and validity dates.
 - Live-shopping requests with customer context, associate assignment and scheduling; virtual-store status distinguishes AI access, physical opening and associate availability.
 - Order management, customers/CRM mock views, associates and analytics. Future CRM access must respect consent and role permissions.
-- Current implementation milestone: polished dashboard and navigable Products, Inventory, Promotions, Cross-sell, Live Requests and Orders mock views. Other capabilities remain planned, not production-ready.
+- Completed Partner milestone: polished dashboard and navigable Products, Inventory, Promotions, Cross-sell, Live Requests and Orders mock views. Other capabilities remain planned, not production-ready.
 
 ## 4. IndiaAnytime Flow
 - Order/shipment control tower linking retailer pickup, multi-store consolidation, export/customs, international transit and US last-mile stages.
@@ -43,8 +43,8 @@ Use stable customer, shopping-trip, retailer, location, product/SKU, request, or
 
 ## Prototype milestones and acceptance
 1. **Customer foundation (existing):** keep Ask AI, recommendations, Compare, saved shortlist, product questions and browser-only session requests functioning.
-2. **Partner checkpoint (current):** IndiaAnytime branding and metadata, responsive dashboard/navigation, all six entry points open meaningful fictional data views, inventory arithmetic is consistent, and demo actions clearly report their local-only scope. Pass compilation/build, lint and existing recommendation tests; commit and push the checkpoint.
-3. **Marketplace + Agent:** Explore Stores and city/district concepts, structured shopping brief, cross-store context, trip recommendations, mock cart/orders.
+2. **Partner checkpoint (completed):** IndiaAnytime branding and metadata, responsive dashboard/navigation, all six entry points open meaningful fictional data views, inventory arithmetic is consistent, and demo actions clearly report their local-only scope. Pass compilation/build, lint and existing recommendation tests; commit and push the checkpoint.
+3. **Marketplace + Agent (implemented):** `/explore` offers four fictional Hyderabad storefronts (major retailer, boutique, local shop, artisan), tile/street views, district filters and explicit future-city concepts. A shared shopping brief follows navigation between Ask and Explore; Q&A and scheduling receive it. Cross-store comparison, price/size-based trip suggestions, a variant-aware mock bag and local mock orders are available. Brief/cart/orders persist in session storage for this tab; existing shortlists and session requests retain their original storage. Order creation snapshots the brief and clears the bag; it never charges or contacts a retailer. Shipping/duties are excluded, timing is illustrative, and live Partner/Flow synchronization remains milestone 4.
 4. **Flow + shared demo:** connected mock order journey, consolidation, event-aware risk, expedite choices and notifications; shared fixture/state contract across modules.
 
 Primary end-to-end scenario: “I need a traditional Indian outfit for my daughter’s event next weekend. Budget around $250.” Capture destination, exact event date and size rather than assume them. Discover and compare options, consult/schedule an associate, recommend accessories within budget, create a mock order and explain illustrative delivery risk.
