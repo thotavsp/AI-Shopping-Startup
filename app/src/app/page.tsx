@@ -103,18 +103,58 @@ export default function Home() {
                 key={product.id}
                 className="rounded-2xl border bg-white p-6 shadow-sm"
               >
-                <div className="mb-5 flex h-48 items-center justify-center rounded-xl bg-stone-100 text-stone-400">
-                  Product image
-                </div>
+                <div className="mb-5 overflow-hidden rounded-xl bg-stone-100">
+  <img
+    src={product.image}
+    alt={product.name}
+    className="h-80 w-full object-cover object-top"
+  />
+</div>
 
-                <p className="text-sm text-stone-500">{product.retailer}</p>
-                <h3 className="mt-1 text-xl font-semibold">{product.name}</h3>
+                <div className="flex items-center justify-between">
+  <p className="text-sm font-medium text-stone-500">
+    {product.retailer}
+  </p>
 
-                <p className="mt-2 text-sm text-stone-600">
-                  {product.description}
-                </p>
+  <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+    {product.availability}
+  </span>
+</div>
 
-                <p className="mt-4 text-2xl font-bold">${product.price}</p>
+<h3 className="mt-2 text-xl font-semibold">
+  {product.name}
+</h3>
+
+<p className="mt-2 text-sm leading-relaxed text-stone-600">
+  {product.description}
+</p>
+
+<div className="mt-4 flex items-center justify-between">
+  <p className="text-2xl font-bold">
+    ${product.price}
+  </p>
+
+  <p className="text-sm">
+    ⭐ {product.rating}{" "}
+    <span className="text-stone-400">
+      ({product.reviews})
+    </span>
+  </p>
+</div>
+
+<p className="mt-3 text-xs text-stone-500">
+  {product.delivery}
+</p>
+
+<div className="mt-5 rounded-xl bg-stone-100 p-4">
+  <p className="text-xs font-bold uppercase tracking-wider text-stone-500">
+    ✨ Why AI picked this
+  </p>
+
+  <p className="mt-2 text-sm leading-relaxed text-stone-700">
+    {product.matchReason}
+  </p>
+</div>
 
                 <div className="mt-5 flex gap-2">
                   <button className="flex-1 rounded-lg border px-3 py-2 text-sm">
