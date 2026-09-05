@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { HomeIcon, HomeScene } from "./HomeVisuals";
+import styles from "./home.module.css";
 import { ShoppingBrief, useCommerce } from "./CommerceContext";
 import { useEffect, useState } from "react";
 import ProductQuestions from "./ProductQuestions";
@@ -47,6 +49,10 @@ export default function Home() {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => {
+    if (showResults || showShortlist) document.getElementById("shopping-results")?.focus();
+  }, [showResults, showShortlist, submittedQuery]);
+
   function updateShortlist(next: number[]) {
     setSavedIds(next);
     try {
@@ -80,76 +86,40 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-stone-50 text-stone-900">
-      <nav className="flex items-center justify-between px-8 py-6">
-        <div className="text-xl font-bold">IndiaAnytime</div>
-
-        <div className="flex flex-wrap gap-6 text-sm">
-          <button onClick={() => setShowShortlist((current) => !current)} aria-pressed={showShortlist}>
-            Saved shortlist ({savedReady ? savedIds.length : "…"})
-          </button>
-          <Link href="/explore">Explore Stores</Link>
-          <Link href="/partner">IndiaAnytime Partner ↗</Link>
-          <Link href="/explore#shopping-bag">Shopping bag ({commerce.cart.reduce((sum, line) => sum + line.quantity, 0)})</Link>
+    <main className={styles.home}>
+      <a className={styles.skip} href="#ask-indiaanytime">Skip to shopping assistant</a>
+      <nav className={styles.nav} aria-label="Main navigation">
+        <Link href="/" className={styles.brand}><span className={styles.brandMark}><HomeIcon name="store" size={23} /></span><span>IndiaAnytime<small>INDIA. ALWAYS OPEN.</small></span></Link>
+        <div className={styles.navLinks}>
+          <Link href="/explore"><HomeIcon name="store" size={17} /> Explore Stores</Link>
+          <button onClick={() => setShowShortlist(current => !current)} aria-pressed={showShortlist}><HomeIcon name="heart" size={17} /> Saved ({savedReady ? savedIds.length : "…"})</button>
+          <Link className={styles.partner} href="/partner">For retailers ↗</Link>
+          <Link className={styles.bag} href="/explore#shopping-bag"><HomeIcon name="bag" size={17} /> Bag ({commerce.cart.reduce((sum,line) => sum + line.quantity, 0)})</Link>
         </div>
       </nav>
-
-      <p className="mx-6 rounded-xl bg-amber-50 p-3 text-center text-sm text-amber-900">Fictional demo: retailers, ratings, inventory, availability and logistics are illustrative. No purchases or live connections are made.</p>
-      <section className="mx-auto flex max-w-5xl flex-col items-center px-6 py-20 text-center">
-        <p className="mb-5 text-sm font-semibold uppercase tracking-widest">
-          India. Always Open.
-        </p>
-
-        <h1 className="max-w-4xl text-5xl font-bold leading-tight md:text-7xl">
-          Shop India like you’re there.
-        </h1>
-
-        <p className="mt-8 max-w-2xl text-lg text-stone-600">
-          Tell IndiaAnytime what you need and we’ll help you discover suitable
-          products from Hyderabad retailers.
-        </p>
-
-        <div className="mt-12 w-full max-w-2xl rounded-2xl bg-white p-4 shadow-lg">
-          <textarea
-            aria-label="Your shopping request"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            className="min-h-28 w-full resize-none p-4 text-lg outline-none"
-            placeholder="What are you shopping for tonight?"
-          />
-
-          <div className="flex justify-end">
-            <button
-              onClick={handleAskAI}
-              className="rounded-xl bg-black px-6 py-3 font-medium text-white"
-            >
-              Ask IndiaAnytime →
-            </button>
-          </div>
+      <p className={styles.demo}><b>MEET THE PROTOTYPE</b> Fictional stores, ratings, inventory and delivery estimates. No real purchases or live connections.</p>
+      <section className={styles.hero} aria-labelledby="home-heading">
+        <div className={styles.heroCopy}>
+          <p className={styles.eyebrow}><HomeIcon name="sparkles" size={15} /> YOUR NEXT DISCOVERY, CLOSER TO HOME</p>
+          <h1 id="home-heading">Shop India like<br />you’re <em>there.</em></h1>
+          <p className={styles.intro}>The joy of an Indian shopping street. The ease of shopping from home. Find a celebration outfit, discover a little boutique, and make it yours.</p>
+          <Link href="/explore" className={styles.modeLink}><HomeIcon name="store" size={18} /> Explore the storefronts <HomeIcon name="arrow" size={16} /></Link>
+          <form id="ask-indiaanytime" className={styles.searchBox} onSubmit={event => { event.preventDefault(); handleAskAI(); }}>
+            <label htmlFor="shopping-query" className={styles.searchLabel}><HomeIcon name="sparkles" size={17} /> What can we help you find?</label>
+            <textarea id="shopping-query" aria-label="Your shopping request" value={query} onChange={event => setQuery(event.target.value)} placeholder="A festive outfit for my daughter, under $250…" maxLength={1000} onKeyDown={event => { if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) { event.preventDefault(); handleAskAI(); } }} />
+            <div className={styles.searchBottom}><small>Demo recommendations<br />Stock not verified</small><button disabled={!query.trim()} className={styles.askButton}>Ask IndiaAnytime <HomeIcon name="arrow" size={16} /></button></div>
+          </form>
+          <div className={styles.examples} aria-label="Example shopping requests">{["Wedding saree under $300", "Outfit for my daughter's event", "Anarkali under $200"].map(example => <button key={example} onClick={() => { setQuery(example); document.getElementById("shopping-query")?.focus(); }}>{example}</button>)}</div>
         </div>
-
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          {[
-            "Wedding saree under $300",
-            "Outfit for my daughter's event",
-            "Men's wedding wear under $250",
-          ].map((example) => (
-            <button
-              key={example}
-              onClick={() => setQuery(example)}
-              className="rounded-full border px-4 py-2 text-sm"
-            >
-              {example}
-            </button>
-          ))}
-        </div>
+        <HomeScene />
       </section>
-
-      <div className="px-6"><ShoppingBrief /></div>
-      <div className="mx-auto mb-10 max-w-6xl px-6"><Link href="/explore" className="inline-block rounded-xl bg-emerald-900 px-6 py-4 text-white">Explore Stores · Take a walk through India →</Link></div>
+      <div className={styles.benefits}>
+        {([['store','Big stores. Little discoveries.','Retailers, boutiques & artisans'],['sparkles','A brief that travels with you','Your occasion, size & budget'],['compare','Find your kind of perfect','Compare across stores'],['globe','From India to your doorstep','Explore mock delivery timing']] as const).map(([icon,title,description]) => <div className={styles.benefit} key={icon}><span><HomeIcon name={icon} size={19} /></span><div><strong>{title}</strong><small>{description}</small></div></div>)}
+      </div>
+      <div className={styles.lower}><ShoppingBrief /></div>
 
       {(showResults || showShortlist) && (
-        <section className="mx-auto max-w-6xl px-6 pb-24">
+        <section id="shopping-results" tabIndex={-1} aria-label={showShortlist ? "Saved shortlist" : "Product recommendations"} className={`${styles.results} mx-auto max-w-6xl px-6 pb-16`}>
           <div className="mb-8">
             <p className="text-sm font-semibold uppercase tracking-wider text-stone-500">
               {showShortlist ? "Your favorites" : "IndiaAnytime understood"}
@@ -321,6 +291,15 @@ export default function Home() {
           )}
         </section>
       )}
+    <div className={styles.lower}>
+      <div className={styles.sectionTitle}><div><p className={styles.eyebrow}>THERE’S MORE THAN ONE WAY TO FIND IT</p><h2>Follow your curiosity.</h2></div></div>
+      <div className={styles.paths}>
+        <Link href="/explore" className={styles.path}><span><HomeIcon name="store" size={30} /></span><div><h3>Take the scenic route.</h3><p>Wander Hyderabad’s imagined storefronts.<br />Major retailers, local shops, and artisan finds.</p></div><HomeIcon name="arrow" /></Link>
+        <a href="#ask-indiaanytime" className={styles.path}><span><HomeIcon name="sparkles" size={30} /></span><div><h3>Start with a little inspiration.</h3><p>Tell us the occasion and your budget.<br />We’ll help you explore the sample catalog.</p></div><HomeIcon name="arrow" /></a>
+      </div>
+      <div className={styles.sectionTitle}><div><p className={styles.eyebrow}>A FAMILIAR FEELING. A NEW WAY TO SHOP.</p><h2>From “I’m looking for…” to “that’s the one.”</h2></div></div>
+      <div className={styles.steps}>{[["01", "Tell us what you have in mind", "An occasion, a budget, a size. Keep your shopping brief close as you discover different stores."],["02", "Discover, compare, ask", "Explore the collections, save your favorites, and ask catalog questions. Plan a local demo shopping session."],["03", "Bring your finds together", "Build a mock bag across stores and review illustrative delivery timing. No payment or retailer contact."]].map(([n,title,description]) => <article key={n} className={styles.step}><span>{n}</span><h3>{title}</h3><p>{description}</p></article>)}</div>
+    </div>
     {questionProduct && <ProductQuestions key={questionProduct.id} product={questionProduct} matchReason={recommendations.reason(questionProduct)} request={shoppingContext} onClose={() => setQuestionProduct(null)} onSchedule={() => { setScheduleProduct(questionProduct.name); setQuestionProduct(null); }} />}
     <ShoppingSessions product={scheduleProduct} request={shoppingContext} onClose={() => setScheduleProduct(null)} />
     {liveProduct && (
@@ -371,6 +350,7 @@ export default function Home() {
     </div>
   </div>
 )}
+    <div className={styles.lower}><footer className={styles.footer}><strong>IndiaAnytime · India. Always Open.</strong><span>A shopping prototype, made for discovery.</span><Link href="/partner">Open Partner workspace ↗</Link></footer></div>
     </main>
   );
 }
