@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "./home.module.css";
+import photos from "./homePhotos.module.css";
 
 export type IconName = "sparkles" | "store" | "bag" | "heart" | "arrow" | "pin" | "video" | "check" | "globe" | "compare";
 export function HomeIcon({ name, size = 20 }: { name: IconName; size?: number }) {
@@ -18,30 +18,20 @@ export function HomeIcon({ name, size = 20 }: { name: IconName; size?: number })
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{paths[name]}</svg>;
 }
 
+const places = [
+  { id: "charminar", label: "Charminar", detail: "Old City, Hyderabad", alt: "Charminar’s minarets and arch above the busy Old City street", author: "DidierTais", year: "2008", license: "3.0", source: "Charminar_Hyderabad_1.jpg" },
+  { id: "ameerpet", label: "Ameerpet", detail: "Around Maitrivanam", alt: "Shops and commercial buildings beside Ameerpet metro station", author: "Tushar0034", year: "2025", license: "4.0", source: "Near_Maitrivanam,_After_Satyam_Theatre_Road,_Ameerpet,_Hyderabad,_Nov_2025.jpg" },
+  { id: "kphb", label: "KPHB", detail: "A walk through the street market", alt: "A street market lined with shops in KPHB, Kukatpally", author: "Tushar0034", year: "2025", license: "4.0", source: "KPHB_Street_Market,_Kukatpally,_JNTU,_Oct_2025.jpg" },
+];
+
 export function HomeScene() {
-  return <div className={styles.scene} aria-label="Illustrated Indian shopping street with a sample occasion-wear product" role="img">
-    <div className={styles.orbit} /><div className={styles.sun} /><div className={styles.dotGrid} />
-    <div className={styles.cityBadge}><HomeIcon name="pin" size={16} /> A little closer to Hyderabad</div>
-    <svg className={styles.streetArt} viewBox="0 0 520 380" fill="none" aria-hidden="true">
-      <path d="M22 357H510" stroke="#c7bba5" strokeWidth="2" />
-      <path d="M36 355V128h137v227" fill="#e0a369" /><path d="M32 126h146v16H32z" fill="#bf774b" />
-      <path d="M60 126V93a44 44 0 0 1 88 0v33" fill="#eac28e" /><path d="M72 126V95a32 32 0 0 1 64 0v31" fill="#f9e4bc" />
-      <path d="M88 124V99a16 16 0 0 1 32 0v25" fill="#b77952" />
-      <path d="M53 190h103v153H53z" fill="#7a5a3e" /><path d="M64 343V234a40 40 0 0 1 80 0v109" fill="#eedfc6" />
-      <path d="M75 343V236a29 29 0 0 1 58 0v107" fill="#3d5b47" /><path d="M104 207v136" stroke="#dbb98a" strokeWidth="4" />
-      <path d="m47 172 7-29h104l8 29" fill="#fff1d7" /><path d="m62 143-5 29m25-29-2 29m23-29v29m22-29 2 29m19-29 5 29" stroke="#b5754c" strokeWidth="10" />
-      <path d="M181 355V58h143v297" fill="#f1d3a3" /><path d="M192 58V40h121v18" fill="#cf9d69" />
-      <path d="M225 40a28 28 0 0 1 55 0" fill="#dfb47f" /><path d="M210 104a17 17 0 0 1 34 0v36h-34zm52 0a17 17 0 0 1 34 0v36h-34z" fill="#bb895b" />
-      <path d="M218 104a9 9 0 0 1 18 0v28h-18zm52 0a9 9 0 0 1 18 0v28h-18z" fill="#faedcf" />
-      <path d="M197 181h112v162H197z" fill="#2d5241" /><path d="M198 211h110M253 211v133" stroke="#caab74" strokeWidth="4" />
-      <path d="M195 155h116v28H195z" fill="#5d7456" /><text x="253" y="174" textAnchor="middle" fill="#fff0ce" fontSize="11" fontFamily="Georgia">THE OCCASION EDIT</text>
-      <path d="M336 355V159h116v196" fill="#ce8970" /><path d="M347 159V128h92v31" fill="#b97561" />
-      <path d="M350 219h88v124h-88z" fill="#ebc8a4" /><path d="M365 342v-87a29 29 0 0 1 58 0v87" fill="#745e52" />
-      <path d="m343 195 8-24h86l8 24" fill="#f6dfb9" /><path d="m359 172-4 23m25-23v23m23-23v23m22-23 5 23" stroke="#ae674f" strokeWidth="10" />
-      <path d="M16 355h27l-4-42H20zm451 0h26l-3-35h-20" fill="#ad6846" /><path d="M30 319v-62m0 28q-35-8-22-28 23 4 22 28m0 12q34-8 25-28-22 2-25 28m449 30v-60m0 28q-27-6-20-24 20 2 20 24m0 9q27-6 21-24-20 2-21 24" stroke="#667b52" strokeWidth="7" />
-    </svg>
-    <div className={styles.productFloat}><div className={styles.floatPhoto}><Image src="/products/lehenga.jpg" alt="" fill sizes="170px" style={{objectFit:"cover",objectPosition:"top"}} priority /></div><div><small>THE CELEBRATION EDIT</small><strong>Kanchi Silk Lehenga</strong><span>$229 <em>Sample product</em></span></div></div>
-    <div className={styles.agentFloat}><span><HomeIcon name="sparkles" /></span><div><strong>Your occasion. Your style.</strong><small>A little help finding your perfect match.</small></div></div>
-    <div className={styles.sceneCaption}><span /> Imagined storefronts. Endless inspiration.</div>
-  </div>;
+  return <section className={photos.scene} aria-label="Hyderabad in photographs">
+    <div className={photos.heading}><span><HomeIcon name="pin" size={16} /> HYDERABAD, UP CLOSE</span><small>Real places. Familiar streets.</small></div>
+    <div className={photos.collage}>{places.map((place,index) => <figure key={place.id} className={index === 0 ? photos.landmark : photos.neighborhood}>
+      <Image src={`/places/${place.id}.webp`} alt={place.alt} fill sizes={index === 0 ? "(max-width: 800px) 58vw, 320px" : "(max-width: 800px) 38vw, 210px"} priority={index === 0} style={{objectFit:"cover",objectPosition:index === 0 ? "50% 50%" : index === 2 ? "50% 70%" : "45% 50%"}} />
+      <figcaption><strong>{place.label}</strong><span>{place.detail}</span></figcaption>
+    </figure>)}</div>
+    <p className={photos.note}>Location photography for inspiration · Not live views or partner-store listings.</p>
+    <details className={photos.credits}><summary>Photo credits & licenses</summary><ul>{places.map(place => <li key={place.id}><a href={`https://commons.wikimedia.org/wiki/File:${place.source}`}>{place.label}</a> — {place.author}, {place.year} · <a href={`https://creativecommons.org/licenses/by-sa/${place.license}/`}>CC BY-SA {place.license}</a>.</li>)}</ul><p>Photos resized and converted to WebP; display crops vary by screen. Adapted images retain their original licenses. No photographer or pictured business endorsement is implied.</p></details>
+  </section>;
 }
