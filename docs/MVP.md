@@ -1,5 +1,7 @@
 # IndiaAnytime expanded MVP
 
+For the overall product inventory, prioritized backlog, repository map and reusable continuation prompt, read [Product and Working Session Guide](PRODUCT_AND_SESSION_GUIDE.md). This MVP document remains the feature-scope and acceptance reference.
+
 **India. Always Open.** · **Shop India like you’re there.**
 
 Build status: September 5, 2026. Local prototype in the existing private repository. All stores, people, catalog stock, ratings, offers, orders, broadcasts and logistics are fictional. No purchase, retailer contact, real hold, video stream or shipment occurs. No paid API, production payment, AWS change, carrier connection or AI service is included.
