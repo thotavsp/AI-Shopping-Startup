@@ -1,60 +1,75 @@
-# IndiaAnytime — Expanded MVP and platform vision
+# IndiaAnytime expanded MVP
 
-**India. Always Open.**
+**India. Always Open.** · **Shop India like you’re there.**
 
-**Shop India like you’re there.**
+Build status: September 5, 2026. Local prototype in the existing private repository. All stores, people, catalog stock, ratings, offers, orders, broadcasts and logistics are fictional. No purchase, retailer contact, real hold, video stream or shipment occurs. No paid API, production payment, AWS change, carrier connection or AI service is included.
 
-## Goal and demo boundary
-Help customers in the US discover Indian stores, carry their shopping intent across stores, consult a virtual agent and associates, and understand international delivery before ordering. Start with a Hyderabad apparel demo, designed for a broader marketplace.
+## Routes and implemented demo behavior
 
-Use realistic mock data only. Retailers, artisans, customer identities, ratings/reviews, inventory, associate availability, prices, orders, and logistics are fictional demo fixtures, not verified claims. No retailer is contacted, stock reserved, video connected, payment processed, or shipment dispatched. Delivery estimates and confidence are illustrative, never guarantees. Label these boundaries in every module. Keep existing browser-saved shortlists and session requests compatible.
+| Surface | Route | Available in this checkpoint |
+| --- | --- | --- |
+| Ask IndiaAnytime | `/` | Submitted-query rule-based recommendations, explanations, catalog questions, Compare (up to 3), saved shortlist, existing Shop Live/scheduling, shopping brief, Explore path and public Store Live tiles |
+| Explore Stores | `/explore` | Four fictional Hyderabad retailers representing major retailer, boutique, small shop and artisan; district filters, virtual street/tile modes, collection, Compare, Q&A, size-aware bag, mock checkout |
+| Individual stores | `/stores/[id]` | Store identity, collection, shared brief, public shoppable Store Live preview, featured product, local question reply, offer preview, try-on/private shopping links |
+| IndiaAnytime Partner | `/partner` | Existing dashboard preserved; connected retailer selection, catalog and draft pricing, SKU/location snapshot inventory, shared timed holds, draft collections, discount/bundle previews, cross-sell/upsell review, live requests, connected orders, associate availability, tab activity analytics, product-only Live Studio |
+| Visual Try-On | `/try-on?product=1` | Avatar-first or illustrated demo model, product/size selection, conceptual colors, save/restore/remove one look, shared bag and private shopping handoff |
+| Private Live Shopping | `/live-shopping?product=1` | Simulated connection, product illustration/close-up, scripted chat, shared 30-minute hold, example offer, shared bag, local Partner request, consent/revoke controls |
+| IndiaAnytime Flow | `/flow` | Actual mock orders from this tab, retailer pickup, multi-store consolidation, export documents/customs, international transit, US import customs and last mile; simulated stage/delay controls, event-date risk, ETA window, expedite comparison and local event feed |
 
-## 1. IndiaAnytime Marketplace
-- Two primary shopping modes: **Ask IndiaAnytime** and **Explore Stores**.
-- Storefront tiles and a street-style browsing concept for major retailers, boutiques, small/local shops, and artisans; enter a store and discover its collection.
-- Prototype city and shopping-district exploration (Hyderabad first; Bengaluru, Chennai, Mumbai, Delhi as future demo extensions). Simple accessible navigation takes priority over literal 3D streets.
-- Customer context follows the shopper across stores: intent, budget, occasion, event date, size, location, preferences, shortlist, questions, and shopping trip.
-- Preserve existing Ask AI, rule-based recommendations, product comparisons, shortlist, product questions, Shop Live and local scheduling flows. Add mock cart and order actions in a later prototype milestone.
+Unknown store IDs return a not-found page. Bengaluru, Chennai, Mumbai and Delhi remain clearly labeled concept previews; working catalog is Hyderabad only.
 
-## 2. IndiaAnytime Agent
-- Virtual shopping interface with intent, budget/currency, occasion, event date, size and destination context; visibly identify unknown fields.
-- Product discovery, comparisons and explanations, store questions, live-shopping requests and scheduling, cart/order actions.
-- Delivery feasibility based on destination and event deadline; disclose uncertainty and propose alternatives.
-- Cross-store shopping-trip recommendations and complementary cross-sell (for example outfit, jewelry and footwear), respecting the total budget and delivery constraints.
-- Demo responses use local fixtures/rules. Real AI services are deferred.
+## Shared state contract
 
-## 3. IndiaAnytime Partner
-- Retailer dashboard: sales, orders, live requests, stock alerts, store status and operational priorities.
-- Catalog/products with descriptions, categories, collections, merchandising, imagery, pricing and international eligibility.
-- SKU/variant inventory by color, size and location; on-hand, reservations/holds and available stock; low-stock alerts and hold expiry.
-- Promotions: percentage/fixed discounts, festival campaigns, live-shopping offers, bundles, cross-sell and upsell; eligibility and validity dates.
-- Live-shopping requests with customer context, associate assignment and scheduling; virtual-store status distinguishes AI access, physical opening and associate availability.
-- Order management, customers/CRM mock views, associates and analytics. Future CRM access must respect consent and role permissions.
-- Completed Partner milestone: polished dashboard and navigable Products, Inventory, Promotions, Cross-sell, Live Requests and Orders mock views. Other capabilities remain planned, not production-ready.
+- `CommerceContext` remains the source for the shopping brief, bag and checkout order snapshots. Catalog and stores use stable IDs from `data/marketplace.ts`.
+- Brief includes intent, merchandise budget in USD, occasion, event date, size and US city/state. Do not collect a personal address for this demo.
+- Ask and Explore share the brief. Store, try-on and private-shopping actions add the same product/size lines to the same bag. Maximum quantity is 9 per variant. Shipping, duties and taxes are excluded.
+- Creating an order snapshots the brief and lines, calculates catalog merchandise total, assigns a `DEMO-` ID and clears the bag. Partner filters these same orders by retailer; Flow reads the same order and stores its own simulated journey by order ID.
+- `DemoOperations` shares expiring product/size holds, local live requests and per-store broadcast status/title/featured product. Partner Live Studio changes appear in public Store Live within the same tab. Private-session requests snapshot the brief for Partner; repeated waiting requests for the same product are deduplicated.
+- Holds expire after 30 minutes and can be released. They demonstrate workflow only, do not allocate actual inventory or reduce the separate historical SKU/location seed stock. A repeated hold on the same product/size refreshes its expiration.
+- Tab storage keys: `indiaanytime.trip.v1`, `indiaanytime.operations.v1`, `indiaanytime.flow.v1`, `indiaanytime.look.v1`. Reload restores validated records where browser storage is available. No account sync or cross-tab realtime sync.
+- Existing `nightshop.shortlist.v1` and `nightshop.sessions.v1` compatibility is preserved. Existing scheduled requests remain their original separate browser-local workflow; they are not appointments and are not the private-room queue.
 
-## 4. IndiaAnytime Flow
-- Order/shipment control tower linking retailer pickup, multi-store consolidation, export/customs, international transit and US last-mile stages.
-- Illustrative ETA ranges, event-aware delivery risk/confidence, exception handling and expedite recommendations with cost tradeoffs.
-- Mock customer notifications for meaningful status changes, delays and actions needed.
-- Model an event deadline separately from an estimated arrival. Explain risk drivers such as pending pickup or customs uncertainty; never promise delivery on an event date.
+## Privacy contract
 
-## 5. Shared commerce and customer context
-Use stable customer, shopping-trip, retailer, location, product/SKU, request, order and shipment IDs. Agent captures the shopping brief; Partner sees the relevant brief and stock/hold state; Flow receives order lines, pickup locations, destination and deadline. Updates should eventually propagate across modules rather than create contradictory copies. This milestone uses explicit Partner fixtures; live cross-module synchronization is a subsequent milestone.
+- Try-on begins with an anonymous avatar. Demo-model mode uses an illustration. No real photo/body upload or camera access exists.
+- Customer and associate personal cameras start off. Microphones stay off. Product-only mode is the default, and no recording is available.
+- Personal-video buttons open an explicit consent dialog. Confirming changes only a simulated sharing indicator; no real feed opens. The dialog explains whose consent is being simulated; a future real service must obtain independent participant consent.
+- Sharing indicators remain visible, each participant can be reset, and **Revoke all sharing** immediately restores product-only mode. Ending the mock session also resets sharing and clears chat/draft.
+- Public Store Live has no customer camera/microphone controls and cannot expose a shopper feed. Retailer Live Studio is product-only, with personal video, microphones and recording off.
+- No `getUserMedia`, media transport, recording SDK or external video provider is used. No measurements are collected; personal-video simulation does not imply real privacy/security certification.
 
-## Prototype milestones and acceptance
-1. **Customer foundation (existing):** keep Ask AI, recommendations, Compare, saved shortlist, product questions and browser-only session requests functioning.
-2. **Partner checkpoint (completed):** IndiaAnytime branding and metadata, responsive dashboard/navigation, all six entry points open meaningful fictional data views, inventory arithmetic is consistent, and demo actions clearly report their local-only scope. Pass compilation/build, lint and existing recommendation tests; commit and push the checkpoint.
-3. **Marketplace + Agent (implemented):** `/explore` offers four fictional Hyderabad storefronts (major retailer, boutique, local shop, artisan), tile/street views, district filters and explicit future-city concepts. A shared shopping brief follows navigation between Ask and Explore; Q&A and scheduling receive it. Cross-store comparison, price/size-based trip suggestions, a variant-aware mock bag and local mock orders are available. Brief/cart/orders persist in session storage for this tab; existing shortlists and session requests retain their original storage. Order creation snapshots the brief and clears the bag; it never charges or contacts a retailer. Shipping/duties are excluded, timing is illustrative, and live Partner/Flow synchronization remains milestone 4.
-4. **Flow + shared demo:** connected mock order journey, consolidation, event-aware risk, expedite choices and notifications; shared fixture/state contract across modules.
+## Flow assumptions
 
-Primary end-to-end scenario: “I need a traditional Indian outfit for my daughter’s event next weekend. Budget around $250.” Capture destination, exact event date and size rather than assume them. Discover and compare options, consult/schedule an associate, recommend accessories within budget, create a mock order and explain illustrative delivery risk.
+The control tower uses an illustrative remaining-day model, recomputed against the viewing date, not an actual carrier ETA. Missing deadline or destination yields unknown confidence. An event on/before the earliest estimate is high risk; arrival near the deadline retains a safety buffer warning. Delays add days. Expedite compares an illustrative $35 increment and up to two days saved, without booking or charging. No probability or on-time guarantee is claimed. Actual stock, pickup, consolidation, paperwork, customs and carrier capacity remain unverified. Order briefs remain immutable snapshots when the current shopping brief changes.
 
-## Future features — preserved, outside this checkpoint
-- Real inventory/catalog integrations and retailer onboarding; multi-retailer marketplace expansion.
-- Real video shopping, virtual try-on and authorized store camera/360 experiences with retailer permission and privacy controls.
-- Drone-assisted operations where authorized and operationally viable.
-- Production payments, real fulfillment/carriers/customs integrations and customer notifications.
-- Personalization, production AI retailer assistant and consent-aware CRM.
-- AWS deployment and production infrastructure, security, access controls and observability.
+## Acceptance walkthrough
 
-No paid APIs, AWS complexity or production commerce integrations in this milestone.
+1. Ask for an outfit under $250; check recommendations and Compare, save a shortlist and open existing questions/scheduling.
+2. Set a demo shopping brief with size, US destination and event date. Explore the four storefronts and open Hyderabad Heritage’s page.
+3. Watch the Store Live mock, select a size and add a product to the shared bag. Preview an offer; observe the explicit unchanged catalog-price disclosure.
+4. Open try-on, switch avatar/model/color/size, save and restore a look. Add an artisan accessory from another store for consolidation.
+5. Start private shopping, see cameras/mic/recording off, ask for a close-up, send a local chat, create a hold and inspect the explicit video consent dialog. Confirm the simulation, revoke it, and end the session.
+6. In Partner, see that request and hold, assign a demo associate, and use Live Studio to end/start the store’s mock broadcast. Return to the storefront to see the changed status.
+7. Create a mock order from Explore. Verify the same ID and lines in Partner and Flow. Advance stages, inject a delay, compare expedite and inspect event risk and the local update feed. Reload to verify tab persistence.
+
+## Partial and deferred work
+
+- Try-on is a generic vector silhouette, not garment rendering or fit prediction. Color concepts are not stocked variants and are not added to bag lines. A true back-view video is not implemented.
+- Public/private offers, Partner pricing, promotions, collections and bundles are transparent previews/drafts. They do not alter checkout totals or publish real pricing. Merchandise configuration remains page-local.
+- Inventory includes fictional SKU/color/size/multi-location snapshots, but shared holds are product/size based rather than an atomic location inventory ledger. Actual allocation, hold conflict resolution and checkout consumption are future work.
+- Associate assignment records a local assigned status; no real employee is contacted, and availability remains a page-local demonstration. Analytics cover tab activity and label historical seed figures separately.
+- Logistics is a scenario simulator, not live tracking. No customs filing, export eligibility determination, carrier quote or notification delivery occurs.
+- Store catalog is intentionally small. Onboarding, editable descriptions/images and large-catalog management remain future iterations. Authentication, role permissions, CRM, security hardening, multi-user state and durable backend are absent.
+- Real AI, virtual try-on, video, recordings, inventory integrations, payments, international fulfillment and AWS/production deployment require a separately authorized phase. Preserve the private-demo boundary.
+
+## Validation
+
+Run from `app`: `npm run lint`, `node --test tests/*.test.mjs`, and `npm run build -- --webpack`; run `git diff --check` from repository root. Existing recommendation/marketplace tests cover budgets, product filtering, subtotal and delivery boundaries. Flow tests cover unknown inputs, event-risk boundaries, delay/expedite arithmetic and delivered state. Browser checks should cover the connected order journey and consent/revoke flows, including responsive layout where possible.
+
+### Verified checkpoint results
+
+- Production webpack build passed, generating homepage, Explore, Partner, four store pages, Try-On, Private Shopping and Flow.
+- Lint passed with zero errors and the two pre-existing homepage image-optimization warnings.
+- All 11 recommendation, marketplace and Flow tests passed; Git whitespace validation passed.
+- Desktop browser checks passed: request-based recommendations and two-product Compare; shopping brief propagation; avatar/model/color/size selection, saved look and shared bag; private connection, close-up, hold, consent, revoke and end-session cleanup; retailer switch ends the session and revokes sharing; two-store mock checkout visible under the same order ID in Flow and Partner; Flow stage/delay/expedite state survives reload; Partner broadcast end is reflected on the public storefront.
+- No browser console errors were observed in the checked flows. Homepage, Try-On, storefront broadcast and Flow received visual inspection at the default desktop viewport. Dedicated mobile, full accessibility and exhaustive browser automation suites remain pending.
