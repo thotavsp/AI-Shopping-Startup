@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useState } from "react";
 import styles from "./partner.module.css";
+import PartnerOperations from "./PartnerOperations";
 
-const sections = ["Overview", "Products", "Inventory", "Promotions", "Cross-sell", "Live Requests", "Orders"] as const;
+const sections = ["Overview", "Products", "Inventory", "Promotions", "Cross-sell", "Live Requests", "Orders", "Collections", "Associates", "Analytics", "Live Studio"] as const;
 type Section = typeof sections[number];
 const stock = [
   { sku: "KSL-M-MAG", name: "Kanchi Silk Lehenga", variant: "Magenta · M", location: "Banjara Hills", quantity: 8, held: 2, price: 229, eligible: true },
@@ -38,7 +39,7 @@ export default function Partner() {
       <p className={styles.tagline}>India. Always Open.</p>
       <div className={styles.store}><span className={styles.monogram}>HH</span><div><strong>Hyderabad Heritage</strong><small>Fictional retailer · 2 locations</small></div></div>
       <p className={styles.label}>WORKSPACE</p>
-      <nav aria-label="Partner navigation">{sections.map((item, i) => <button key={item} aria-current={section === item ? "page" : undefined} className={section === item ? styles.active : ""} onClick={() => navigate(item)}><span aria-hidden="true">{["◈", "▦", "▤", "◇", "✧", "◉", "▣"][i]}</span>{item}{item === "Live Requests" && <b>{2 - accepted.length}</b>}</button>)}</nav>
+      <nav aria-label="Partner navigation">{sections.map((item, i) => <button key={item} aria-current={section === item ? "page" : undefined} className={section === item ? styles.active : ""} onClick={() => navigate(item)}><span aria-hidden="true">{["◈", "▦", "▤", "◇", "✧", "◉", "▣", "▧", "♧", "↗", "◉"][i]}</span>{item}{item === "Live Requests" && <b>{2 - accepted.length}</b>}</button>)}</nav>
       <div className={styles.sidebarBottom}><span className={styles.liveDot} /> Virtual storefront open<p>AI discovery available 24/7<br />Live associates: demo availability</p><Link href="/">← Customer marketplace</Link></div>
     </aside>
     <main className={styles.main}>
@@ -47,6 +48,7 @@ export default function Partner() {
         <div className={styles.demo}>DEMO WORKSPACE <span>All retailers, customers, metrics, inventory, availability and logistics are fictional. Changes last only for this visit.</span></div>
         <div className={styles.heading}><div><p className={styles.eyebrow}>HYDERABAD HERITAGE · SEPTEMBER 5, 2026 SNAPSHOT</p><h1>{section === "Overview" ? "Your store, beyond borders." : section}</h1><p>{section === "Overview" ? "A little closer to your customers. Wherever they call home." : "Your international storefront, with every detail in view."}</p></div><button className={styles.primary} onClick={() => navigate(section === "Live Requests" ? "Overview" : "Live Requests")}>{section === "Live Requests" ? "Back to overview" : "View live requests ↗"}</button></div>
         {notice && <p role="status" className={styles.notice}>{notice}</p>}
+        <PartnerOperations section={section} />
         {section === "Overview" && <>
           <div className={styles.metrics}>{[["US sales · today", "$637", "3 demo orders · USD"], ["Orders to fulfill", "3", "1 needs delivery review"], ["Live requests", String(2 - accepted.length), "2 demo associates available"], ["Available units", "23", "5 held across 2 locations"]].map(([label,value,detail]) => <article className={styles.card} key={label}><p>{label}</p><strong className={styles.metric}>{value}</strong><small>{detail}</small></article>)}</div>
           <div className={styles.columns}><section className={styles.feature}><p className={styles.eyebrow}>THE VIRTUAL STOREFRONT</p><h2>Your doors close.<br />Your possibilities don’t.</h2><p>Keep discovery going while your team rests. Give every shopping request a thoughtful next step.</p><div className={styles.statusRow}><span>Physical store <b>Closed · demo</b></span><span>AI shopping <b>Open 24/7 · demo</b></span></div><button onClick={() => navigate("Live Requests")}>Meet your next customer →</button></section><section className={styles.card}><div className={styles.cardHeading}><h2>Needs your attention</h2><span className={styles.pill}>3 priorities</span></div>{[["01", "An event is approaching", "Maya’s Sep 13 celebration precedes the mock ETA.", "Orders"], ["02", "A size is running low", "2 available · Magenta / S · Secunderabad", "Inventory"], ["03", "Complete the occasion", "Review an outfit + jewelry pairing.", "Cross-sell"]].map(([n,title,detail,target]) => <button key={n} className={styles.priority} onClick={() => navigate(target as Section)}><span>{n}</span><div><strong>{title}</strong><p>{detail}</p></div><span>↗</span></button>)}</section></div>

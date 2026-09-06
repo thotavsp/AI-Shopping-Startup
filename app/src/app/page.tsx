@@ -7,6 +7,7 @@ import { ShoppingBrief, useCommerce } from "./CommerceContext";
 import { useEffect, useState } from "react";
 import ProductQuestions from "./ProductQuestions";
 import ShoppingSessions from "./ShoppingSessions";
+import { StoreLiveTiles } from "./StoreLive";
 import { recommend } from "../data/recommendations";
 import { products } from "../data/products";
 
@@ -93,6 +94,7 @@ export default function Home() {
         <div className={styles.navLinks}>
           <Link href="/explore"><HomeIcon name="store" size={17} /> Explore Stores</Link>
           <button onClick={() => setShowShortlist(current => !current)} aria-pressed={showShortlist}><HomeIcon name="heart" size={17} /> Saved ({savedReady ? savedIds.length : "…"})</button>
+          <Link href="/flow">Track with Flow</Link>
           <Link className={styles.partner} href="/partner">For retailers ↗</Link>
           <Link className={styles.bag} href="/explore#shopping-bag"><HomeIcon name="bag" size={17} /> Bag ({commerce.cart.reduce((sum,line) => sum + line.quantity, 0)})</Link>
         </div>
@@ -116,7 +118,7 @@ export default function Home() {
       <div className={styles.benefits}>
         {([['store','Big stores. Little discoveries.','Retailers, boutiques & artisans'],['sparkles','A brief that travels with you','Your occasion, size & budget'],['compare','Find your kind of perfect','Compare across stores'],['globe','From India to your doorstep','Explore mock delivery timing']] as const).map(([icon,title,description]) => <div className={styles.benefit} key={icon}><span><HomeIcon name={icon} size={19} /></span><div><strong>{title}</strong><small>{description}</small></div></div>)}
       </div>
-      <div className={styles.lower}><ShoppingBrief /></div>
+      <div className={styles.lower}><ShoppingBrief /><StoreLiveTiles /></div>
 
       {(showResults || showShortlist) && (
         <section id="shopping-results" tabIndex={-1} aria-label={showShortlist ? "Saved shortlist" : "Product recommendations"} className={`${styles.results} mx-auto max-w-6xl px-6 pb-16`}>
@@ -223,6 +225,7 @@ export default function Home() {
                 >
                   {savedIds.includes(product.id) ? "♥ Saved — remove" : "♡ Save to shortlist"}
                 </button>
+                <Link href={`/try-on?product=${product.id}`} className="mt-3 block rounded-lg border border-stone-300 px-3 py-2 text-center text-sm">Virtual Try-On · demo</Link>
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() => toggleCompare(product.id)}
@@ -330,9 +333,9 @@ export default function Home() {
       </p>
 
       <div className="mt-7 space-y-3">
-        <button disabled className="w-full rounded-xl bg-stone-200 px-5 py-4 text-left text-stone-600">
-          🎥 Live video — coming later
-        </button>
+        <Link href={`/live-shopping?product=${products.find(item => item.name === liveProduct)?.id ?? 1}`} className="block w-full rounded-xl bg-emerald-900 px-5 py-4 text-left text-white">
+          Open private video shopping mock · cameras off
+        </Link>
 
         <button onClick={() => { const product = products.find((item) => item.name === liveProduct); if (product) { setQuestionProduct(product); setLiveProduct(null); } }} className="w-full rounded-xl border px-5 py-4 text-left">
           🤖 Ask AI About This Item
